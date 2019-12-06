@@ -3,14 +3,26 @@ import {
   PENDING,
   FAILURE,
   SUCCESS,
+  Issue,
 } from '../src/index'
 import * as oauth2 from '../src/types'
 
-test('sum types to defined IO status', () => {
+test('sum types that defines IO status', () => {
   expect(new UNKNOWN() instanceof UNKNOWN).toBe(true)
   expect(new PENDING() instanceof PENDING).toBe(true)
   expect(new FAILURE({}) instanceof FAILURE).toBe(true)
   expect(new SUCCESS({}) instanceof SUCCESS).toBe(true)
+})
+
+test('recoverable http issue', () => {
+  const issue = new Issue(
+    { status: '500' },
+    { details: 'The Text', instance: 'The Instance', title: 'The Title' },
+  )
+  expect(issue.type).toBe('https://httpstatuses.com/500')
+  expect(issue.details).toBe('The Text')
+  expect(issue.instance).toBe('The Instance')
+  expect(issue.title).toBe('The Title')
 })
 
 test('oauth2 config', () => {

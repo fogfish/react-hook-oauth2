@@ -18,6 +18,20 @@ export class SUCCESS extends IO {
 }
 
 //
+// Recoverable IO Error
+// abstracts Problem Details for HTTP
+// https://tools.ietf.org/html/rfc7807
+export class Issue extends Error {
+  constructor(http, json) {
+    super(http.status)
+    this.type = `https://httpstatuses.com/${http.status}`
+    this.instance = json.instance
+    this.title = json.title
+    this.details = json.details
+  }
+}
+
+//
 // Global OAuth2 configuration
 const HOST = process.env.REACT_APP_OAUTH2_HOST || 'localhost'
 export const OAUTH2_AUTHORIZE = process.env.REACT_APP_OAUTH2_AUTHORIZE || `https://${HOST}/oauth2/authorize`
