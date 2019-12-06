@@ -4,8 +4,10 @@
     "commonjs": true,
     "es6": true,
     "node": true,
-    "browser": true
+    "browser": true,
+    "jest/globals": true
   },
+  "plugins": ["jest"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
