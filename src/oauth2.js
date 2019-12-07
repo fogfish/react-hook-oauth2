@@ -53,15 +53,25 @@ const accessTokenImplicit = ({
 
 //
 //
-const accessTokenExchange = ({ code }, updateStatus) => (
-  fetch(OAUTH2_TOKEN, {
+const accessTokenExchange = async ({ code }, updateStatus) => {
+  const rights = await fetch(OAUTH2_TOKEN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: encode({ grant_type: 'authorization_code', client_id: OAUTH2_CLIENT_ID, code }),
   })
     .then(jsonify('application/json'))
     .then(x => accessTokenImplicit(x, updateStatus))
-)
+  return rights
+}
+
+//
+//
+const accessTokenStorage = updateStatus => {
+  const token = JSON.parse(window.localStorage.getItem('access_token'))
+  const now = +new Date()
+  setTimeout(() => updateStatus(new FAILURE('expired')), Math.max(0, token.expires - now))
+  return token
+}
 
 //
 // accessToken handles response from authorization server
@@ -76,6 +86,8 @@ export const accessToken = async updateStatus => {
       accessTokenImplicit(oauth2, updateStatus)
     } else if (oauth2.code) {
       await accessTokenExchange(oauth2, updateStatus)
+    } else {
+      accessTokenStorage(updateStatus)
     }
     updateStatus(new SUCCESS({}))
   } catch (e) {
