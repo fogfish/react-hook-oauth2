@@ -1,4 +1,5 @@
 import { encode, decode } from './utils'
+import { jsonify } from './net'
 import {
   PENDING,
   FAILURE,
@@ -7,6 +8,7 @@ import {
   OAUTH2_FLOW_TYPE,
   OAUTH2_SCOPE,
   OAUTH2_AUTHORIZE,
+  OAUTH2_TOKEN,
 } from './types'
 
 //
@@ -49,6 +51,17 @@ const accessTokenImplicit = ({
   return rights
 }
 
+//
+//
+const accessTokenExchange = ({ code }, updateStatus) => (
+  fetch(OAUTH2_TOKEN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: encode({ grant_type: 'authorization_code', client_id: OAUTH2_CLIENT_ID, code }),
+  })
+    .then(jsonify('application/json'))
+    .then(x => accessTokenImplicit(x, updateStatus))
+)
 
 //
 // accessToken handles response from authorization server
@@ -61,6 +74,8 @@ export const accessToken = async updateStatus => {
       throw oauth2.error
     } else if (oauth2.access_token) {
       accessTokenImplicit(oauth2, updateStatus)
+    } else if (oauth2.code) {
+      await accessTokenExchange(oauth2, updateStatus)
     }
     updateStatus(new SUCCESS({}))
   } catch (e) {

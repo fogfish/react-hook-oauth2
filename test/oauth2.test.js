@@ -19,23 +19,42 @@ test('signout redirect agent to root', () => {
   expect(window.location).toBe('/')
 })
 
-test('authorization server response with error', async () => {
+test('oauth2 flow - failure', async () => {
   Object.defineProperty(window, 'location', {
     writable: true,
     value: { search: '?error=unauthorized' },
   })
   let result
-  accessToken(x => { result = x })
+  await accessToken(x => { result = x })
   expect(result).toStrictEqual(new FAILURE('unauthorized'))
 })
 
-test('authrization server returns implicit token', async () => {
+test('oauth2 flow - implicit token', async () => {
   Object.defineProperty(window, 'location', {
     writable: true,
-    value: { search: '?access_token=xxx&expires_in=3600' },
+    value: { search: '?access_token=implicit&expires_in=3600' },
   })
   let result
-  accessToken(x => { result = x })
+  await accessToken(x => { result = x })
   expect(result).toStrictEqual(new SUCCESS({}))
-  expect(window.localStorage.getItem('access_token_bearer')).toBe('Bearer xxx')
+  expect(window.localStorage.getItem('access_token_bearer')).toBe('Bearer implicit')
+})
+
+test('oauth2 flow - code exchange', async () => {
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: { search: '?code=123' },
+  })
+
+  const mockJson = Promise.resolve({
+    access_token: 'exchange',
+    expires_in: 3600,
+  })
+  const mockFetch = Promise.resolve({ json: () => mockJson })
+  global.fetch = jest.fn().mockImplementation(() => mockFetch)
+
+  let result
+  await accessToken(x => { result = x })
+  expect(result).toStrictEqual(new SUCCESS({}))
+  expect(window.localStorage.getItem('access_token_bearer')).toBe('Bearer exchange')
 })
