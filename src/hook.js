@@ -67,7 +67,7 @@ export const useSecureLookup = endpoint => {
   const [status, updateStatus] = useState(endpoint ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
-  
+
   useEffect(() => {
     const effect = !url ? undefined : () => secureLookup(url)
     ioEffect(effect, updateStatus)
@@ -83,7 +83,7 @@ export const useSecureRemove = endpoint => {
   const [status, updateStatus] = useState(endpoint ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
-  
+
   useEffect(() => {
     const effect = !url ? undefined : () => secureRemove(url)
     ioEffect(effect, updateStatus)
