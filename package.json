@@ -1,12 +1,15 @@
 {
   "name": "react-hook-oauth2",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "OAuth2 Effects and Hooks for React Apps",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "babel src -d lib",
     "test": "jest",
-    "lint": "eslint src/*.js test/*.js"
+    "lint": "eslint src/*.js test/*.js",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run lint",
+    "clean": "rm -Rf lib && rm -Rf node_modules"
   },
   "keywords": [],
   "author": "",
