@@ -9,6 +9,7 @@ import {
   OAUTH2_SCOPE,
   OAUTH2_AUTHORIZE,
   OAUTH2_TOKEN,
+  Issue,
 } from './types'
 
 //
@@ -33,8 +34,6 @@ export const signout = () => {
   window.location = '/'
 }
 
-//
-//
 const accessTokenImplicit = ({
   access_token,
   expires_in,
@@ -47,12 +46,10 @@ const accessTokenImplicit = ({
   const rights = { token, expires, ...scopes }
   window.localStorage.setItem('access_token', JSON.stringify(rights))
   window.localStorage.setItem('access_token_bearer', token)
-  setTimeout(() => updateStatus(new FAILURE('expired')), timeout)
+  setTimeout(() => updateStatus(new FAILURE(new Issue({ status: 401 }, { title: 'expired' }))), timeout)
   return rights
 }
 
-//
-//
 const accessTokenExchange = async ({ code }, updateStatus) => {
   const rights = await fetch(OAUTH2_TOKEN, {
     method: 'POST',
@@ -64,13 +61,14 @@ const accessTokenExchange = async ({ code }, updateStatus) => {
   return rights
 }
 
-//
-//
 const accessTokenStorage = updateStatus => {
   const token = JSON.parse(window.localStorage.getItem('access_token'))
-  const now = +new Date()
-  setTimeout(() => updateStatus(new FAILURE('expired')), Math.max(0, token.expires - now))
-  return token
+  if (token) {
+    const now = +new Date()
+    setTimeout(() => updateStatus(new FAILURE(new Issue({ status: 401 }, { title: 'expired' }))), Math.max(0, token.expires - now))
+    return token
+  }
+  throw new Issue({ status: 401 }, { title: 'unauthorized' })
 }
 
 //
