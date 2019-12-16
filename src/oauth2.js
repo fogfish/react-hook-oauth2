@@ -21,13 +21,14 @@ import {
 
 //
 // authorize send a request to authority server
-export const authorize = () => {
-  const request = {
+export const authorize = redirectUri => {
+  const base = {
     client_id: OAUTH2_CLIENT_ID,
     response_type: OAUTH2_FLOW_TYPE,
     scope: OAUTH2_SCOPE,
     state: 'none',
   }
+  const request = !redirectUri ? base : { ...base, redirect_uri: redirectUri }
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')
   window.location = `${OAUTH2_AUTHORIZE}/?${encode(request)}`
