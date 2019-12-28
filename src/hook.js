@@ -63,14 +63,22 @@ export const useOAuth2 = () => {
 //
 //
 export const useSecureLookup = endpoint => {
-  const [url, sequence] = useState(endpoint)
+  const [url, updateUrl] = useState(endpoint)
   const [status, updateStatus] = useState(endpoint ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
+  // Note: we need to simultaneously update status and url
+  const sequence = x => {
+    updateStatus(x ? new PENDING() : new UNKNOWN())
+    updateUrl(x)
+  }
 
   useEffect(() => {
-    const effect = !url ? undefined : () => secureLookup(url)
-    ioEffect(effect, updateStatus)
+    if (url) {
+      return ioEffect(() => secureLookup(url), updateStatus)
+    }
+    updateStatus(new UNKNOWN())
+    return undefined
   }, [url, attempt])
   maybePanic(status)
   return { status, retry, sequence }
@@ -79,14 +87,22 @@ export const useSecureLookup = endpoint => {
 //
 //
 export const useSecureRemove = endpoint => {
-  const [url, sequence] = useState(endpoint)
+  const [url, updateUrl] = useState(endpoint)
   const [status, updateStatus] = useState(endpoint ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
+  // Note: we need to simultaneously update status and url
+  const sequence = x => {
+    updateStatus(x ? new PENDING() : new UNKNOWN())
+    updateUrl(x)
+  }
 
   useEffect(() => {
-    const effect = !url ? undefined : () => secureRemove(url)
-    ioEffect(effect, updateStatus)
+    if (url) {
+      return ioEffect(() => secureRemove(url), updateStatus)
+    }
+    updateStatus(new UNKNOWN())
+    return undefined
   }, [url, attempt])
   maybePanic(status)
   return { status, retry, sequence }
@@ -95,20 +111,27 @@ export const useSecureRemove = endpoint => {
 //
 //
 export const useSecureCreate = (endpoint, json) => {
-  const [url, sequence] = useState(endpoint)
-  const [payload, commit] = useState(json)
+  const [url, updateUrl] = useState(endpoint)
+  const [payload, updatePayload] = useState(json)
   const [status, updateStatus] = useState((endpoint && json) ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
+  // Note: we need to simultaneously update status and url
+  const sequence = x => {
+    updateStatus((x && payload) ? new PENDING() : new UNKNOWN())
+    updateUrl(x)
+  }
+  const commit = x => {
+    updateStatus((url && x) ? new PENDING() : new UNKNOWN())
+    updatePayload(x)
+  }
 
   useEffect(() => {
-    if (!(url && payload)) {
-      updateStatus(new UNKNOWN())
+    if (url && payload) {
+      return ioEffect(() => secureCreate(url, payload), updateStatus)
     }
-  }, [payload, url])
-  useEffect(() => {
-    const effect = !(url && payload) ? undefined : () => secureCreate(url, payload)
-    ioEffect(effect, updateStatus)
+    updateStatus(new UNKNOWN())
+    return undefined
   }, [url, payload, attempt])
   maybePanic(status)
 
@@ -123,20 +146,27 @@ export const useSecureCreate = (endpoint, json) => {
 //
 //
 export const useSecureUpdate = (endpoint, json) => {
-  const [url, sequence] = useState(endpoint)
-  const [payload, commit] = useState(json)
+  const [url, updateUrl] = useState(endpoint)
+  const [payload, updatePayload] = useState(json)
   const [status, updateStatus] = useState((endpoint && json) ? new PENDING() : new UNKNOWN())
   const [attempt, updateAttempt] = useState(0)
   const retry = () => updateAttempt(attempt + 1)
+  // Note: we need to simultaneously update status and url
+  const sequence = x => {
+    updateStatus((x && payload) ? new PENDING() : new UNKNOWN())
+    updateUrl(x)
+  }
+  const commit = x => {
+    updateStatus((url && x) ? new PENDING() : new UNKNOWN())
+    updatePayload(x)
+  }
 
   useEffect(() => {
-    if (!(url && payload)) {
-      updateStatus(new UNKNOWN())
+    if (url && payload) {
+      return ioEffect(() => secureUpdate(url, payload), updateStatus)
     }
-  }, [payload, url])
-  useEffect(() => {
-    const effect = !(url && payload) ? undefined : () => secureUpdate(url, payload)
-    ioEffect(effect, updateStatus)
+    updateStatus(new UNKNOWN())
+    return undefined
   }, [url, payload, attempt])
   maybePanic(status)
 
