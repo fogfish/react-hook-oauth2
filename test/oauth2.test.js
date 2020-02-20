@@ -18,7 +18,7 @@ import '@babel/polyfill'
 test('authorize redirect agent to authorization server', () => {
   Object.defineProperty(window, 'location', { writable: true })
   authorize()
-  expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&scope=&state=none')
+  expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&scope=&redirect_uri=http%3A%2F%2Flocalhost%3A3000&state=')
 })
 
 test('signout redirect agent to root', () => {

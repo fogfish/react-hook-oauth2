@@ -12,6 +12,7 @@ import {
   FAILURE,
   SUCCESS,
   OAUTH2_CLIENT_ID,
+  OAUTH2_REDIRECT_URI,
   OAUTH2_FLOW_TYPE,
   OAUTH2_SCOPE,
   OAUTH2_AUTHORIZE,
@@ -21,14 +22,14 @@ import {
 
 //
 // authorize send a request to authority server
-export const authorize = redirectUri => {
-  const base = {
+export const authorize = state => {
+  const request = {
     client_id: OAUTH2_CLIENT_ID,
     response_type: OAUTH2_FLOW_TYPE,
     scope: OAUTH2_SCOPE,
-    state: 'none',
+    redirect_uri: OAUTH2_REDIRECT_URI,
+    state: state || '',
   }
-  const request = !redirectUri ? base : { ...base, redirect_uri: redirectUri }
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')
   window.location = `${OAUTH2_AUTHORIZE}/?${encode(request)}`
@@ -62,7 +63,12 @@ const accessTokenExchange = async ({ code }, updateStatus) => {
   const rights = await fetch(OAUTH2_TOKEN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: encode({ grant_type: 'authorization_code', client_id: OAUTH2_CLIENT_ID, code }),
+    body: encode({
+      grant_type: 'authorization_code',
+      client_id: OAUTH2_CLIENT_ID,
+      redirect_uri: OAUTH2_REDIRECT_URI,
+      code,
+    }),
   })
     .then(jsonify('application/json'))
     .then(x => accessTokenImplicit(x, updateStatus))

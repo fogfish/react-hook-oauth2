@@ -5,16 +5,21 @@
 // of the MIT license.  See the LICENSE file for details.
 // https://github.com/fogfish/react-hook-oauth2
 //
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   PENDING,
   FAILURE,
   SUCCESS,
+  OAUTH2_INTROSPECT,
 } from './types'
+import { useSecureLookup } from './hook'
 
 //
 // HoC: details about signed in user
 export const WhoIs = Component => {
+  const { status } = useSecureLookup(OAUTH2_INTROSPECT)
+  return (<Component status={status} />)
+  /*
   const [whois, updateState] = useState({})
 
   useEffect(() => {
@@ -31,6 +36,7 @@ export const WhoIs = Component => {
     return () => clearInterval(ref)
   }, [])
   return (<Component {...whois} />)
+  */
 }
 
 //
