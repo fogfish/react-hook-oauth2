@@ -13,7 +13,6 @@ import {
   FAILURE,
   SUCCESS,
 } from '../src/index'
-import '@babel/polyfill'
 
 test('authorize redirect agent to authorization server', () => {
   Object.defineProperty(window, 'location', { writable: true })

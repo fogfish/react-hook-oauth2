@@ -17,6 +17,7 @@ import {
   OAUTH2_SCOPE,
   OAUTH2_AUTHORIZE,
   OAUTH2_TOKEN,
+  OAUTH2_TRYOUT,
   Issue,
 } from './types'
 
@@ -41,6 +42,12 @@ export const signout = () => {
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')
   window.location = '/'
+}
+
+export const tryout = () => {
+  window.localStorage.removeItem('access_token')
+  window.localStorage.removeItem('access_token_bearer')
+  window.location = `${OAUTH2_TRYOUT}`
 }
 
 const accessTokenImplicit = ({
