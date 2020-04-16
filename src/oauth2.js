@@ -77,7 +77,7 @@ const accessTokenExchange = async ({ code }, updateStatus) => {
       code,
     }),
   })
-    .then(jsonify('application/json'))
+    .then(jsonify)
     .then(x => accessTokenImplicit(x, updateStatus))
   return rights
 }

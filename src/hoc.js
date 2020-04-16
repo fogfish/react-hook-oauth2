@@ -10,19 +10,24 @@ import {
   PENDING,
   FAILURE,
   SUCCESS,
+  UNKNOWN,
   OAUTH2_INTROSPECT,
 } from './types'
 import { useSecureLookup } from './hook'
 
 //
 // HoC: details about signed in user
-export const WhoIs = Component => {
+export const Introspect = Component => {
   const { status } = useSecureLookup(OAUTH2_INTROSPECT)
   return (<Component status={status} />)
-  /*
-  const [whois, updateState] = useState({})
+}
 
-  useEffect(() => {
+//
+// HoC: details about signed in user
+export const WhoIs = Component => {
+  const [whois, updateState] = React.useState({})
+
+  React.useEffect(() => {
     const ref = setInterval(
       () => {
         const t = JSON.parse(window.localStorage.getItem('access_token'))
@@ -36,23 +41,38 @@ export const WhoIs = Component => {
     return () => clearInterval(ref)
   }, [])
   return (<Component {...whois} />)
-  */
 }
 
 //
 // HoC: Loading and Error branch
-export const WhileIO = (Loading, Recover, Component) => ({ status, ...props }) => {
+export const WhileIO = (...Components) => props => (
+  Components.reduce((acc, f) => acc || f(props), null)
+)
+
+export const Unknown = Component => ({ status, ...props }) => {
+  if (status instanceof UNKNOWN) {
+    return <Component status={status} {...props} />
+  }
+  return null
+}
+
+export const Pending = Component => ({ status, ...props }) => {
   if (status instanceof PENDING) {
-    return (!Loading ? null : <Loading status={status} {...props} />)
+    return <Component status={status} {...props} />
   }
+  return null
+}
 
+export const Failure = Component => ({ status, ...props }) => {
   if (status instanceof FAILURE) {
-    return (!Recover ? null : <Recover status={status} {...props} />)
+    return <Component status={status} {...props} />
   }
+  return null
+}
 
+export const Success = Component => ({ status, ...props }) => {
   if (status instanceof SUCCESS) {
     return <Component {...status} {...props} />
   }
-
-  return <Component status={status} {...props} />
+  return null
 }

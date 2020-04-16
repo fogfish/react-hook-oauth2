@@ -9,12 +9,18 @@ import { Issue } from './types'
 
 //
 //
-export const jsonify = contentType => async http => {
+export const jsonify = async http => {
   if (http.status >= 300 || http.status < 200) {
     const error = await http.json()
     throw new Issue(http, error)
   }
-  return contentType === 'application/json' ? http.json() : http.text()
+  if (http.headers) {
+    return http.headers.get('Content-Type') === 'application/json'
+      ? http.json()
+      : http.text()
+  }
+
+  return http.json()
 }
 
 const recoverIncorrectCORS = error => {
@@ -47,7 +53,7 @@ export const secureIO = (url, { headers = {}, ...spec }) => fetch(url, {
   },
 })
   .catch(recoverIncorrectCORS)
-  .then(jsonify(headers.Accept))
+  .then(jsonify)
   .catch(recoverIncorrectJSON)
 
 //
