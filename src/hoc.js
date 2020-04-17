@@ -72,7 +72,7 @@ export const Failure = Component => ({ status, ...props }) => {
 
 export const Success = Component => ({ status, ...props }) => {
   if (status instanceof SUCCESS) {
-    return <Component {...status} {...props} />
+    return <Component status={status} {...status} {...props} />
   }
   return null
 }
