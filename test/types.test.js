@@ -41,3 +41,47 @@ test('oauth2 config', () => {
   expect(oauth2.OAUTH2_FLOW_TYPE).toBe('code')
   expect(oauth2.OAUTH2_SCOPE).toBe('')
 })
+
+test('UNKNOWN type', () => {
+  const status = new UNKNOWN()
+  const f = () => 1
+
+  expect(status instanceof UNKNOWN).toBe(true)
+  expect(status.map(f)).toBe(status)
+  expect(status.onSuccess(f)).toBe(status)
+  expect(status.onFailure(f)).toBe(status)
+  expect(status.onRecover(f)).toBe(status)
+})
+
+test('PENDING type', () => {
+  const status = new PENDING()
+  const f = () => 1
+
+  expect(status instanceof PENDING).toBe(true)
+  expect(status.map(f)).toBe(status)
+  expect(status.onSuccess(f)).toBe(status)
+  expect(status.onFailure(f)).toBe(status)
+  expect(status.onRecover(f)).toBe(status)
+})
+
+test('FAILURE type', () => {
+  const status = new FAILURE(false)
+  const f = () => 1
+
+  expect(status instanceof FAILURE).toBe(true)
+  expect(status.map(f)).toBe(status)
+  expect(status.onSuccess(f)).toBe(status)
+  expect(status.onFailure(f)).toStrictEqual(new FAILURE(1))
+  expect(status.onRecover(f)).toStrictEqual(new SUCCESS(1))
+})
+
+test('SUCCESS type', () => {
+  const status = new SUCCESS(true)
+  const f = () => 1
+
+  expect(status instanceof SUCCESS).toBe(true)
+  expect(status.map(f)).toStrictEqual(new SUCCESS(1))
+  expect(status.onSuccess(f)).toStrictEqual(new SUCCESS(1))
+  expect(status.onFailure(f)).toBe(status)
+  expect(status.onRecover(f)).toBe(status)
+})
