@@ -1,6 +1,6 @@
 {
   "name": "react-hook-oauth2",
-  "version": "0.2.2",
+  "version": "0.2.6",
   "description": "OAuth2 Effects and Hooks for React Apps",
   "main": "lib/index.js",
   "scripts": {
@@ -19,25 +19,25 @@
     "url": "https://github.com/fogfish/react-hook-oauth2.git"
   },
   "dependencies": {
-    "query-string": "^6.12.1",
+    "query-string": "^6.13.0",
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "@babel/preset-react": "^7.9.4",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-runtime": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^25.3.0",
-    "eslint": "^6.8.0",
+    "babel-jest": "^26.0.1",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-jest": "^23.13.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^3.0.0",
-    "jest": "^25.3.0"
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "jest": "^26.0.1"
   },
   "browserslist": {
     "production": [

@@ -5,7 +5,7 @@
 // of the MIT license.  See the LICENSE file for details.
 // https://github.com/fogfish/react-hook-oauth2
 //
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { accessToken } from './oauth2'
 import {
   UNKNOWN,
@@ -59,6 +59,41 @@ export const useOAuth2 = () => {
   return status
 }
 
+//
+//
+export const useSecureIO = (eff, defaultValue, onlyAfterCommit = true) => {
+  const [value, commit] = useState(defaultValue)
+  const [status, updateStatus] = useState(
+    defaultValue !== undefined
+      ? new SUCCESS(defaultValue)
+      : new UNKNOWN(),
+  )
+  const [attempt, updateAttempt] = useState(0)
+  const retry = () => updateAttempt(attempt + 1)
+  const skipFirstRun = useRef(onlyAfterCommit)
+
+  useEffect(() => {
+    if (skipFirstRun.current) {
+      skipFirstRun.current = false
+      return undefined
+    }
+
+    if (value !== undefined) {
+      return ioEffect(() => eff(value), updateStatus)
+    }
+
+    updateStatus(new UNKNOWN())
+    return undefined
+  }, [eff, value, attempt])
+  maybePanic(status)
+
+  return {
+    status,
+    retry,
+    commit,
+    value,
+  }
+}
 
 //
 //

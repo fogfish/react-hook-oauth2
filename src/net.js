@@ -58,30 +58,35 @@ export const secureIO = (url, { headers = {}, ...spec }) => fetch(url, {
 
 //
 //
-export const secureLookup = url => secureIO(url, { method: 'GET', headers: { Accept: 'application/json' } })
+export const secureJsonIO = (url, { headers = {}, json = undefined, ...spec }) => (
+  (json === undefined)
+    ? secureIO(url, {
+      ...spec,
+      headers,
+    })
+    : secureIO(url, {
+      ...spec,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(json),
+    })
+)
 
 //
 //
-export const secureCreate = (url, json) => secureIO(url, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-  body: JSON.stringify(json),
-})
+export const secureLookup = (url, json = undefined) => secureJsonIO(url, { method: 'GET', json })
 
 //
 //
-export const secureUpdate = (url, json) => secureIO(url, {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-  body: JSON.stringify(json),
-})
+export const secureCreate = (url, json = undefined) => secureJsonIO(url, { method: 'POST', json })
 
 //
 //
-export const secureRemove = url => secureIO(url, { method: 'DELETE', headers: { Accept: 'application/json' } })
+export const secureUpdate = (url, json = undefined) => secureJsonIO(url, { method: 'PUT', json })
+
+//
+//
+export const secureRemove = (url, json = undefined) => secureJsonIO(url, { method: 'DELETE', json })
