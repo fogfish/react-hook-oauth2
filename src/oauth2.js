@@ -102,13 +102,30 @@ export const accessToken = async updateStatus => {
     if (oauth2.error) {
       throw oauth2.error
     } else if (oauth2.access_token) {
-      accessTokenImplicit(oauth2, updateStatus)
+      const {
+        token_type,
+        token,
+        expires,
+        ...other
+      } = accessTokenImplicit(oauth2, updateStatus)
+      updateStatus(new SUCCESS(other))
     } else if (oauth2.code) {
-      await accessTokenExchange(oauth2, updateStatus)
+      const {
+        token_type,
+        token,
+        expires,
+        ...other
+      } = await accessTokenExchange(oauth2, updateStatus)
+      updateStatus(new SUCCESS(other))
     } else {
-      accessTokenStorage(updateStatus)
+      const {
+        token_type,
+        token,
+        expires,
+        ...other
+      } = accessTokenStorage(updateStatus)
+      updateStatus(new SUCCESS(other))
     }
-    updateStatus(new SUCCESS({}))
   } catch (e) {
     updateStatus(new FAILURE(e))
   }
