@@ -70,8 +70,8 @@ export const Failure = Component => ({ status, ...props }) => {
   return null
 }
 
-export const Success = Component => ({ status, ...props }) => {
-  if (status instanceof SUCCESS) {
+export const Success = (Component, fn = () => true) => ({ status, ...props }) => {
+  if (status instanceof SUCCESS && fn(status.content)) {
     return <Component status={status} {...status} {...props} />
   }
   return null
