@@ -21,9 +21,12 @@ test('authorize redirect agent to authorization server', () => {
 })
 
 test('signout redirect agent to root', () => {
-  Object.defineProperty(window, 'location', { writable: true })
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: { reload: () => { window.location.search = '?reload' } },
+  })
   signout()
-  expect(window.location).toBe('/')
+  expect(window.location.search).toBe('?reload')
 })
 
 test('oauth2 flow - failure', async () => {

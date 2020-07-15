@@ -41,7 +41,7 @@ export const authorize = state => {
 export const signout = () => {
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')
-  window.location = '/'
+  window.location.reload()
 }
 
 export const tryout = () => {
