@@ -15,7 +15,7 @@ export const jsonify = async http => {
     throw new Issue(http, error)
   }
   if (http.headers) {
-    return http.headers.get('Content-Type') === 'application/json'
+    return http.headers.get('Content-Type').startsWith('application/json')
       ? http.json()
       : http.text()
   }

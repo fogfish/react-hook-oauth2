@@ -106,6 +106,8 @@ export const accessToken = async updateStatus => {
         token_type,
         token,
         expires,
+        id_token,
+        refresh_token,
         ...other
       } = accessTokenImplicit(oauth2, updateStatus)
       updateStatus(new SUCCESS(other))
@@ -114,6 +116,8 @@ export const accessToken = async updateStatus => {
         token_type,
         token,
         expires,
+        id_token,
+        refresh_token,
         ...other
       } = await accessTokenExchange(oauth2, updateStatus)
       updateStatus(new SUCCESS(other))
@@ -122,6 +126,8 @@ export const accessToken = async updateStatus => {
         token_type,
         token,
         expires,
+        id_token,
+        refresh_token,
         ...other
       } = accessTokenStorage(updateStatus)
       updateStatus(new SUCCESS(other))
