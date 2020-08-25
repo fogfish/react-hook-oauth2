@@ -23,13 +23,15 @@ import {
 
 //
 // authorize send a request to authority server
-export const authorize = state => {
+export const authorize = (actions = [], app = {}) => {
+  const scope = OAUTH2_SCOPE.split(' ').concat(actions)
+  const state = JSON.stringify({ scope, app })
   const request = {
     client_id: OAUTH2_CLIENT_ID,
     response_type: OAUTH2_FLOW_TYPE,
-    scope: OAUTH2_SCOPE,
     redirect_uri: OAUTH2_REDIRECT_URI,
-    state: state || '',
+    scope,
+    state,
   }
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')

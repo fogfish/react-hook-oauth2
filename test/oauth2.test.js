@@ -17,7 +17,7 @@ import {
 test('authorize redirect agent to authorization server', () => {
   Object.defineProperty(window, 'location', { writable: true })
   authorize()
-  expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&scope=&redirect_uri=http%3A%2F%2Flocalhost%3A3000&state=')
+  expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=&state=%7B%22scope%22%3A%5B%22%22%5D%2C%22app%22%3A%7B%7D%7D')
 })
 
 test('signout redirect agent to root', () => {
