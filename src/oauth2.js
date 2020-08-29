@@ -25,7 +25,7 @@ import {
 // authorize send a request to authority server
 export const authorize = (actions = [], app = {}) => {
   const scope = OAUTH2_SCOPE.split(' ').concat(actions)
-  const state = JSON.stringify({ scope, app })
+  const state = JSON.stringify(app)
   const request = {
     client_id: OAUTH2_CLIENT_ID,
     response_type: OAUTH2_FLOW_TYPE,
