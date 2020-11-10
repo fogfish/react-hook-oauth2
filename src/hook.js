@@ -21,23 +21,35 @@ import {
   secureUpdate,
 } from './net'
 
-const ioEffect = (eff, updateStatus) => {
-  let effectMounted = true
-  const effect = async () => {
-    updateStatus(new PENDING())
+/*
 
+effect is stateful async computation (aka promise) that 
+exists in one of the state: PENDING, SUCCESS or FAILURE
+*/
+export const effect = async (eff, updateStatus) => {
+  if (eff) {
+    updateStatus(new PENDING())
     try {
       const content = await eff()
-      if (!effectMounted) return
       updateStatus(new SUCCESS(content))
     } catch (error) {
-      if (!effectMounted) return
       updateStatus(new FAILURE(error))
     }
   }
-  if (eff) {
-    effect()
-  }
+}
+
+/*
+
+effectHook is helper function to wrap effects into hooks
+
+useEffect(
+  () => effectHook(() => secureRemove(url), updateStatus),
+  [],
+)
+*/
+export const effectHook = (eff, updateStatus) => {
+  let effectMounted = true
+  effect(eff, x => effectMounted && updateStatus(x))
   return () => { effectMounted = false }
 }
 
@@ -47,8 +59,10 @@ const maybePanic = status => {
   }
 }
 
-//
-//
+/*
+
+useOAuth2 hook obtains access token
+*/
 export const useOAuth2 = () => {
   const [status, updateStatus] = useState(new PENDING())
 
@@ -59,8 +73,10 @@ export const useOAuth2 = () => {
   return status
 }
 
-//
-//
+/*
+
+useSecureIO is generic hook to wrap networking I/O
+*/
 export const useSecureIO = (eff, defaultValue, onlyAfterCommit = true) => {
   const [value, commit] = useState(defaultValue)
   const [status, updateStatus] = useState(
@@ -79,7 +95,7 @@ export const useSecureIO = (eff, defaultValue, onlyAfterCommit = true) => {
     }
 
     if (value !== undefined) {
-      return ioEffect(() => eff(value), updateStatus)
+      return effectHook(() => eff(value), updateStatus)
     }
 
     updateStatus(new UNKNOWN())
@@ -110,7 +126,7 @@ export const useSecureLookup = endpoint => {
 
   useEffect(() => {
     if (url) {
-      return ioEffect(() => secureLookup(url), updateStatus)
+      return effectHook(() => secureLookup(url), updateStatus)
     }
     updateStatus(new UNKNOWN())
     return undefined
@@ -134,7 +150,7 @@ export const useSecureRemove = endpoint => {
 
   useEffect(() => {
     if (url) {
-      return ioEffect(() => secureRemove(url), updateStatus)
+      return effectHook(() => secureRemove(url), updateStatus)
     }
     updateStatus(new UNKNOWN())
     return undefined
@@ -163,7 +179,7 @@ export const useSecureCreate = (endpoint, json) => {
 
   useEffect(() => {
     if (url && payload) {
-      return ioEffect(() => secureCreate(url, payload), updateStatus)
+      return effectHook(() => secureCreate(url, payload), updateStatus)
     }
     updateStatus(new UNKNOWN())
     return undefined
@@ -198,7 +214,7 @@ export const useSecureUpdate = (endpoint, json) => {
 
   useEffect(() => {
     if (url && payload) {
-      return ioEffect(() => secureUpdate(url, payload), updateStatus)
+      return effectHook(() => secureUpdate(url, payload), updateStatus)
     }
     updateStatus(new UNKNOWN())
     return undefined
