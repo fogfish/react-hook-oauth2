@@ -23,12 +23,12 @@ import {
 
 /*
 
-effect is stateful async computation (aka promise) that 
+effect is stateful async computation (aka promise) that
 exists in one of the state: PENDING, SUCCESS or FAILURE
 */
-export const effect = async (eff, updateStatus) => {
+export const effect = async (eff, updateStatus, pending = undefined) => {
   if (eff) {
-    updateStatus(new PENDING())
+    updateStatus(new PENDING(pending))
     try {
       const content = await eff()
       updateStatus(new SUCCESS(content))

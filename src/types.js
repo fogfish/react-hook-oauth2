@@ -10,6 +10,8 @@
 // Sum Types to define IO status
 //
 class IO {
+  onPending() { return this }
+
   onSuccess() { return this }
 
   onFailure() { return this }
@@ -19,7 +21,16 @@ class IO {
   map() { return this }
 }
 export class UNKNOWN extends IO {}
-export class PENDING extends IO {}
+export class PENDING extends IO {
+  constructor(content) {
+    super()
+    this.content = content
+  }
+
+  onPending(f) { return new PENDING(f(this.content)) }
+
+  map(f) { return new PENDING(f(this.content)) }
+}
 export class SUCCESS extends IO {
   constructor(content) {
     super()
