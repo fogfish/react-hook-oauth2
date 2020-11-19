@@ -58,7 +58,7 @@ test('PENDING type', () => {
   const f = () => 1
 
   expect(status instanceof PENDING).toBe(true)
-  expect(status.map(f)).toBe(status)
+  expect(status.map(f)).toStrictEqual(new PENDING(1))
   expect(status.onSuccess(f)).toBe(status)
   expect(status.onFailure(f)).toBe(status)
   expect(status.onRecover(f)).toBe(status)
