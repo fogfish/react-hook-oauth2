@@ -2,4 +2,7 @@ node_modules
 src
 test
 Makefile
+.metals
+.vscode
+.travis.yml
 
