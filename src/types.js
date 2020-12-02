@@ -10,6 +10,10 @@
 // Sum Types to define IO status
 //
 class IO {
+  constructor(content = undefined) {
+    this.content = content
+  }
+
   onPending() { return this }
 
   onSuccess() { return this }
@@ -19,37 +23,37 @@ class IO {
   onRecover() { return this }
 
   map() { return this }
-}
-export class UNKNOWN extends IO {}
-export class PENDING extends IO {
-  constructor(content) {
-    super()
-    this.content = content
-  }
 
+  yield(f) { return f ? f(this) : this.content }
+}
+
+export class UNKNOWN extends IO {
+  map(f) { return new UNKNOWN(f(this.content)) }
+}
+
+export class PENDING extends IO {
   onPending(f) { return new PENDING(f(this.content)) }
 
   map(f) { return new PENDING(f(this.content)) }
 }
-export class SUCCESS extends IO {
-  constructor(content) {
-    super()
-    this.content = content
-  }
 
+export class SUCCESS extends IO {
   onSuccess(f) { return new SUCCESS(f(this.content)) }
 
   map(f) { return new SUCCESS(f(this.content)) }
 }
+
 export class FAILURE extends IO {
-  constructor(reason) {
-    super()
+  constructor(reason, content = undefined) {
+    super(content)
     this.reason = reason
   }
 
   onFailure(f) { return new FAILURE(f(this.reason)) }
 
   onRecover(f) { return new SUCCESS(f(this.reason)) }
+
+  map(f) { return new FAILURE(this.reason, f(this.content)) }
 }
 
 //

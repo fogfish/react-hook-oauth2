@@ -47,7 +47,9 @@ test('UNKNOWN type', () => {
   const f = () => 1
 
   expect(status instanceof UNKNOWN).toBe(true)
-  expect(status.map(f)).toBe(status)
+  expect(status.map(f)).toStrictEqual(new UNKNOWN(1))
+  expect(status.map(f).yield()).toBe(1)
+  expect(status.map(f).yield(x => x instanceof UNKNOWN)).toBe(true)
   expect(status.onSuccess(f)).toBe(status)
   expect(status.onFailure(f)).toBe(status)
   expect(status.onRecover(f)).toBe(status)
@@ -59,6 +61,8 @@ test('PENDING type', () => {
 
   expect(status instanceof PENDING).toBe(true)
   expect(status.map(f)).toStrictEqual(new PENDING(1))
+  expect(status.map(f).yield()).toBe(1)
+  expect(status.map(f).yield(x => x instanceof PENDING)).toBe(true)
   expect(status.onSuccess(f)).toBe(status)
   expect(status.onFailure(f)).toBe(status)
   expect(status.onRecover(f)).toBe(status)
@@ -69,7 +73,9 @@ test('FAILURE type', () => {
   const f = () => 1
 
   expect(status instanceof FAILURE).toBe(true)
-  expect(status.map(f)).toBe(status)
+  expect(status.map(f)).toStrictEqual(new FAILURE(false, 1))
+  expect(status.map(f).yield()).toBe(1)
+  expect(status.map(f).yield(x => x instanceof FAILURE)).toBe(true)
   expect(status.onSuccess(f)).toBe(status)
   expect(status.onFailure(f)).toStrictEqual(new FAILURE(1))
   expect(status.onRecover(f)).toStrictEqual(new SUCCESS(1))
@@ -81,6 +87,8 @@ test('SUCCESS type', () => {
 
   expect(status instanceof SUCCESS).toBe(true)
   expect(status.map(f)).toStrictEqual(new SUCCESS(1))
+  expect(status.map(f).yield()).toBe(1)
+  expect(status.map(f).yield(x => x instanceof SUCCESS)).toBe(true)
   expect(status.onSuccess(f)).toStrictEqual(new SUCCESS(1))
   expect(status.onFailure(f)).toBe(status)
   expect(status.onRecover(f)).toBe(status)

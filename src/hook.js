@@ -35,12 +35,12 @@ export const effect = async (eff, updateStatus, pending = undefined) => {
       updateStatus(status)
       return status
     } catch (error) {
-      const status = new FAILURE(error)
+      const status = new FAILURE(error, pending)
       updateStatus(status)
       return status
     }
   }
-  return new UNKNOWN()
+  return new UNKNOWN(pending)
 }
 
 /*
