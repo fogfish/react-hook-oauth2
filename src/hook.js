@@ -31,11 +31,16 @@ export const effect = async (eff, updateStatus, pending = undefined) => {
     updateStatus(new PENDING(pending))
     try {
       const content = await eff()
-      updateStatus(new SUCCESS(content))
+      const status = new SUCCESS(content)
+      updateStatus(status)
+      return status
     } catch (error) {
-      updateStatus(new FAILURE(error))
+      const status = new FAILURE(error)
+      updateStatus(status)
+      return status
     }
   }
+  return new UNKNOWN()
 }
 
 /*
