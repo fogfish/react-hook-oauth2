@@ -14,6 +14,8 @@ class IO {
     this.content = content
   }
 
+  onUnknown() { return this }
+
   onPending() { return this }
 
   onSuccess() { return this }
@@ -28,6 +30,8 @@ class IO {
 }
 
 export class UNKNOWN extends IO {
+  onUnknown(f) { return new UNKNOWN(f(this.content)) }
+
   map(f) { return new UNKNOWN(f(this.content)) }
 }
 
