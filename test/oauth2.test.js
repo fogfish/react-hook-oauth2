@@ -8,6 +8,8 @@
 
 import {
   authorize,
+  signin,
+  signup,
   signout,
   accessToken,
   FAILURE,
@@ -18,6 +20,18 @@ test('authorize redirect agent to authorization server', () => {
   Object.defineProperty(window, 'location', { writable: true })
   authorize()
   expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=&state=%7B%7D')
+})
+
+test('signin redirect agent to authorization server', () => {
+  Object.defineProperty(window, 'location', { writable: true })
+  signin()
+  expect(window.location).toBe('https://localhost/oauth2/authorize/?client_id=deadbeef&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=&state=%7B%7D')
+})
+
+test('signup redirect agent to authorization server', () => {
+  Object.defineProperty(window, 'location', { writable: true })
+  signup()
+  expect(window.location).toBe('https://localhost/oauth2/signup/?client_id=deadbeef&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=&state=%7B%7D')
 })
 
 test('signout redirect agent to root', () => {

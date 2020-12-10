@@ -16,14 +16,13 @@ import {
   OAUTH2_FLOW_TYPE,
   OAUTH2_SCOPE,
   OAUTH2_AUTHORIZE,
+  OAUTH2_SIGNUP,
   OAUTH2_TOKEN,
   OAUTH2_TRYOUT,
   Issue,
 } from './types'
 
-//
-// authorize send a request to authority server
-export const authorize = (actions = [], app = {}) => {
+const reqAuthServer = (url, actions = [], app = {}) => {
   const scope = OAUTH2_SCOPE.split(' ').concat(actions)
   const state = JSON.stringify(app)
   const request = {
@@ -35,8 +34,20 @@ export const authorize = (actions = [], app = {}) => {
   }
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('access_token_bearer')
-  window.location = `${OAUTH2_AUTHORIZE}/?${encode(request)}`
+  window.location = `${url}/?${encode(request)}`
 }
+
+//
+// authorize send a request to authority server
+export const authorize = (actions = [], app = {}) => reqAuthServer(OAUTH2_AUTHORIZE, actions, app)
+
+//
+// signin send a request to authority server
+export const signin = (actions = [], app = {}) => reqAuthServer(OAUTH2_AUTHORIZE, actions, app)
+
+//
+// signup send a request to authority server
+export const signup = (actions = [], app = {}) => reqAuthServer(OAUTH2_SIGNUP, actions, app)
 
 //
 // signout removes access tokens from local storage

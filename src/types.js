@@ -78,6 +78,7 @@ export class Issue extends Error {
 // Global OAuth2 configuration
 const HOST = process.env.REACT_APP_OAUTH2_HOST || 'localhost'
 export const OAUTH2_AUTHORIZE = process.env.REACT_APP_OAUTH2_AUTHORIZE || `https://${HOST}/oauth2/authorize`
+export const OAUTH2_SIGNUP = process.env.REACT_APP_OAUTH2_SIGNUP || `https://${HOST}/oauth2/signup`
 export const OAUTH2_TOKEN = process.env.REACT_APP_OAUTH2_TOKEN || `https://${HOST}/oauth2/token`
 export const OAUTH2_TRYOUT = process.env.REACT_APP_OAUTH2_TRYOUT || `https://${HOST}/oauth2/tryout`
 export const OAUTH2_INTROSPECT = process.env.REACT_APP_OAUTH2_INTROSPECT || `https://${HOST}/oauth2/introspect`
